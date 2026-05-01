@@ -6,7 +6,8 @@
 <meta name="description" content="Portfólio audiovisual de Kalust Lisboa em Salvador. Vídeos, fotografia e direção criativa para marcas e eventos.">
 <meta name="author" content="Kalust Lisboa">
 <title>Kalust Lisboa — Produção Audiovisual em Salvador</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --black:#07090a;
@@ -30,13 +31,14 @@
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;}
 
-.cursor{position:fixed;width:8px;height:8px;background:var(--green-bright);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;}
-.cursor-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(78,122,72,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .22s,height .22s;}
+.cursor{position:fixed;width:8px;height:8px;background:var(--green-bright);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;will-change:transform;}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(78,122,72,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .22s,height .22s;will-change:transform;}
 
-/* grain */
+/* grain - simplified for performance */
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:7000;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  mix-blend-mode:overlay;}
+  background:radial-gradient(circle at 20% 50%, rgba(0,0,0,.02) 1px, transparent 1px);
+  background-size:50px 50px;animation:grain 20s steps(10) infinite;}
+@keyframes grain{0%{opacity:.02}50%{opacity:.025}100%{opacity:.02}}
 
 /* ── HERO ── */
 .hero{
@@ -57,11 +59,25 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:7000;
   opacity:.25;
 }
 
-/* folha SVG decorativa hero */
-.hero-leaf{
-  position:absolute;right:-2rem;bottom:8%;
-  width:220px;opacity:.04;
-  pointer-events:none;
+/* folha — esquerda, fundo, quase invisível */
+.hero-leaf {
+  position: absolute;
+  left: -3rem;
+  bottom: 5%;
+  width: 260px;
+  opacity: .025;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-arc {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero-top{
@@ -225,9 +241,9 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,9vw,5rem);line-hei
   background:var(--border);border:1px solid var(--border);
 }
 .gallery-item{position:relative;overflow:hidden;aspect-ratio:2/3;}
-.gallery-item img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:grayscale(10%) contrast(1.05);transition:transform .6s ease,filter .4s ease;}
+.gallery-item img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:grayscale(10%) contrast(1.05);transition:transform .6s ease,filter .4s ease;will-change:transform;contain:layout;}
 .gallery-item:hover img{transform:scale(1.04);filter:grayscale(0%) contrast(1.08);}
-.gallery-item-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,9,10,.65) 0%,transparent 50%);opacity:0;transition:opacity .3s;}
+.gallery-item-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,9,10,.65) 0%,transparent 50%);opacity:0;transition:opacity .3s;contain:layout;}
 .gallery-item:hover .gallery-item-overlay{opacity:1;}
 .gallery-item{cursor:pointer;transition:transform .4s ease;}
 .gallery-item:focus-visible{outline:2px solid var(--green-bright);outline-offset:-2px;}
@@ -271,7 +287,15 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,9vw,5rem);line-hei
 .contact-section{padding:4rem 1.5rem;text-align:center;border-top:1px solid var(--border);position:relative;overflow:hidden;}
 .contact-leaf{position:absolute;right:-2rem;top:50%;transform:translateY(-50%) rotate(15deg);width:180px;opacity:.04;pointer-events:none;}
 .contact-cta{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,13vw,7rem);line-height:.9;letter-spacing:.02em;margin:1.2rem 0;position:relative;}
-.contact-cta em{color:var(--green-bright);font-style:normal;display:block;}
+.contact-cta em{font-style:normal;display:block;position:relative;z-index:1;
+  background: linear-gradient(135deg, var(--green-bright), var(--green-dim), var(--green-bright));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: textureShift 3s ease-in-out infinite;
+}
+@keyframes leafDrift{0%{transform:translateX(0) translateY(0) rotate(0deg);}50%{transform:translateX(1px) translateY(-1px) rotate(-0.35deg);}100%{transform:translateX(0) translateY(0) rotate(0deg);}}
 .contact-sub{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.18em;margin-bottom:2rem;line-height:2;}
 .contact-btns{display:flex;flex-direction:column;gap:.7rem;}
 .btn{display:flex;align-items:center;justify-content:space-between;padding:.95rem 1.3rem;border:1px solid var(--border);color:var(--white);text-decoration:none;font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;transition:all .2s;}
@@ -338,6 +362,99 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
   transform:translateX(-50%) translateY(0);
 }
 
+.intro-grid{
+  margin-top: 2rem !important;
+  line-height: 1.6;
+}
+
+.intro-text{
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.intro-section {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 1.5rem;
+}
+
+.intro-section h2 {
+  background: linear-gradient(135deg, var(--green-bright), var(--green-dim), var(--green-bright));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: textureShift 3s ease-in-out infinite;
+}
+
+.texture-word {
+  background-image: linear-gradient(135deg, rgba(78,122,72,.95) 0%, rgba(39,56,30,.9) 18%, rgba(78,122,72,.95) 32%, rgba(39,56,30,.9) 48%, rgba(78,122,72,.95) 65%, rgba(39,56,30,.9) 80%, rgba(78,122,72,.95) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(78,122,72,.18);
+}
+
+.proc-contact {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 2.5rem 1.5rem;
+  margin: 2rem 1.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.proc-contact::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  right: -2rem;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at center, rgba(78,122,72,.12), transparent 55%);
+  pointer-events: none;
+}
+
+.contact-panel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1;
+  margin: 1rem 0 0.8rem;
+}
+
+.contact-panel-sub {
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  font-size: .85rem;
+  line-height: 1.9;
+  margin-bottom: 1.6rem;
+}
+
+.proc-contact .contact-btns {
+  flex-direction: column;
+  gap: .8rem;
+}
+
+@media(min-width:768px){
+  .proc-contact {
+    margin: 2rem 4rem 0;
+  }
+  .proc-contact .contact-btns {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+@keyframes textureShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 </style>
 </head>
 <body>
@@ -373,13 +490,27 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
   <div class="hero-bg"></div>
   <div class="hero-line"></div>
 
-  <!-- folha decorativa canto inferior direito -->
+  <!-- folha movida pro lado esquerdo, fundo, baixa opacidade -->
   <svg class="hero-leaf" viewBox="0 0 120 200" fill="none">
     <use href="#leaf" color="#4e7a48"/>
   </svg>
 
+  <!-- arco de Oxóssi — decorativo hero -->
+  <svg class="hero-arc" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- corda do arco (linha reta de ponta a ponta) -->
+    <line x1="80" y1="520" x2="1360" y2="520" stroke="#4e7a48" stroke-width="1.2" opacity="0.25"/>
+    <!-- arco (semicírculo) -->
+    <path d="M80,520 Q720,40 1360,520" stroke="#4e7a48" stroke-width="1.8" fill="none" opacity="0.2"/>
+    <!-- flecha (haste vertical) -->
+    <line x1="720" y1="520" x2="720" y2="120" stroke="#4e7a48" stroke-width="1.2" opacity="0.35"/>
+    <!-- ponta da flecha -->
+    <polygon points="720,95 712,125 728,125" fill="#4e7a48" opacity="0.5"/>
+    <!-- encaixe da flecha (base) -->
+    <path d="M714,520 L720,535 L726,520" stroke="#4e7a48" stroke-width="1" fill="none" opacity="0.3"/>
+  </svg>
+
   <div class="hero-top">
-    <img src="assets/klogo.png" alt="kalust logo" style="width:32px;height:auto;opacity:.6;">
+    <img src="assets/klogo.webp" alt="Kalust" width="32" height="32" loading="lazy" style="opacity:.6;" />
     <div class="hero-badge">SALVADOR · BA<br>AUDIOVISUAL · 2026</div>
   </div>
 
@@ -406,31 +537,42 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
 
 <div class="sep"></div>
 
+<section id="intro" class="intro-section">
+  <p class="label reveal">02 — SOBRE</p>
+  <h2 class="reveal">O REAL TEM TEXTURA.</h2>
+  <div class="intro-grid reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:.4rem;">
+    <p class="intro-text">Cresci em Salvador. Aprendi a enxergar cor, ritmo e textura antes de segurar uma câmera.</p>
+    <p class="intro-text">Do ensaio mais silencioso ao show mais caótico — o olhar não muda. Só o que ele encontra.</p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
 <section id="portfolio" class="gallery-section">
-  <p class="label reveal">02 — Portfólio</p>
+  <p class="label reveal">03 — Portfólio</p>
   <h2 class="reveal">O TRABALHO<br>FALA PRIMEIRO</h2>
   <p class="intro-text reveal" style="margin-top:.4rem;">Uma amostra do que sai quando câmera e intenção se encontram.</p>
   <div class="gallery-grid">
     <div class="gallery-item reveal" data-index="0" tabindex="0" aria-label="Vogue Night">
-      <img src="assets/vogue.jpg" alt="Vogue Night" />
+      <img src="assets/vogue.webp" alt="Vogue Night" width="400" height="600" loading="lazy" />
       <div class="gallery-item-overlay">
         <span class="overlay-text">VOGUE NIGHT</span>
       </div>
     </div>
     <div class="gallery-item reveal" data-index="1" tabindex="0" aria-label="Nola Criola — Drag Race">
-      <img src="assets/nola.jpg" alt="Nola Criola — Drag Race" />
+      <img src="assets/nola.webp" alt="Nola Criola — Drag Race" width="400" height="600" loading="lazy" />
       <div class="gallery-item-overlay">
         <span class="overlay-text">NOLA CRIOLA — DRAG RACE</span>
       </div>
     </div>
     <div class="gallery-item reveal" data-index="2" tabindex="0" aria-label="Duquesa × Boca de Brasa">
-      <img src="assets/duquesa.jpg" alt="Duquesa × Boca de Brasa" />
+      <img src="assets/duquesa.webp" alt="Duquesa × Boca de Brasa" width="400" height="600" loading="lazy" />
       <div class="gallery-item-overlay">
         <span class="overlay-text">DUQUESA × BOCA DE BRASA</span>
       </div>
     </div>
     <div class="gallery-item reveal" data-index="3" tabindex="0" aria-label="Casa Criola × Boca de Brasa">
-      <img src="assets/casa.jpg" alt="Casa Criola × Boca de Brasa" />
+      <img src="assets/casa.webp" alt="Casa Criola × Boca de Brasa" width="400" height="600" loading="lazy" />
       <div class="gallery-item-overlay">
         <span class="overlay-text">CASA CRIOLA × BOCA DE BRASA</span>
       </div>
@@ -446,8 +588,8 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
 <div class="sep"></div>
 
 <section class="metrics-section">
-  <p class="label reveal">03 — Métricas</p>
-  <h2 class="reveal">Resultados que transformam som em audiência</h2>
+  <p class="label reveal">04 — Métricas</p>
+  <h2 class="reveal">Resultados que transformam <span class="texture-word">som</span> em <span class="texture-word">audiência</span></h2>
   <div class="about-stats reveal">
     <div class="stat">
       <span class="stat-num">+131K</span>
@@ -476,7 +618,7 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
 
 <!-- SERVICES -->
 <section class="svc-section">
-  <p class="label reveal">04 — Serviços</p>
+  <p class="label reveal">05 — Serviços</p>
   <h2 class="reveal">O QUE<br>POSSO FAZER</h2>
   <p class="intro-text reveal" style="margin-top:.4rem;">Do projeto pontual ao contrato mensal — a entrega se adapta ao que você precisa.</p>
   <div class="svc-grid">
@@ -491,13 +633,29 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
 
 <div class="sep"></div>
 
+<section class="contact-section">
+  <svg class="contact-leaf" viewBox="0 0 120 200" fill="none">
+    <use href="#leaf" color="#4e7a48"/>
+  </svg>
+  <p class="label reveal" style="justify-content:center;">06 — Contato</p>
+  <h2 class="contact-cta reveal">PRONTO PRA<br><em class="texture-word">COMEÇAR?</em></h2>
+  <p class="contact-sub reveal">SALVADOR, BA<br>RESPONDO RÁPIDO · SEM ENROLAÇÃO</p>
+  <div class="contact-btns reveal">
+    <a href="https://wa.me/5571988071570" target="_blank" class="btn primary">WHATSAPP <span class="btn-arr">↗</span></a>
+    <a href="https://www.instagram.com/kalustcam" target="_blank" class="btn">INSTAGRAM <span class="btn-arr">↗</span></a>
+    <a href="https://www.behance.net/kalehb" target="_blank" class="btn">BEHANCE <span class="btn-arr">↗</span></a>
+  </div>
+</section>
+
+<div class="sep"></div>
+
 <!-- PACKAGES -->
 <section class="pkg-section">
   <svg class="pkg-leaf" viewBox="0 0 120 200" fill="none">
     <use href="#leaf" color="#4e7a48"/>
   </svg>
 
-  <p class="label reveal">05 — Pacotes</p>
+  <p class="label reveal">07 — Pacotes</p>
   <h2 class="reveal">ENCONTRE<br>O SEU</h2>
   <p class="intro-text reveal" style="margin-top:.4rem;">Cada pacote tem um botão direto pro WhatsApp — você escolhe, a gente conversa e fecha na hora.</p>
   <div class="pkg-grid">
@@ -554,7 +712,7 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
 
 <!-- PROCESS -->
 <section class="proc-section">
-  <p class="label reveal">06 — Processo</p>
+  <p class="label reveal">08 — Processo</p>
   <h2 class="reveal">COMO<br>FUNCIONA</h2>
   <div class="proc-list">
     <div class="proc reveal"><span class="proc-num">01</span><div><p class="proc-title">BRIEFING</p><p class="proc-desc">Conversa honesta. Você fala do projeto, eu escuto com atenção. Saio com clareza do que você quer e por quê.</p></div></div>
@@ -566,25 +724,21 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
   </div>
 </section>
 
-<div class="sep"></div>
-
-<!-- CONTACT -->
-<section class="contact-section">
-  <svg class="contact-leaf" viewBox="0 0 120 200" fill="none">
-    <use href="#leaf" color="#4e7a48"/>
-  </svg>
-  <p class="label reveal" style="justify-content:center;">07 — Contato</p>
-  <h2 class="contact-cta reveal">PRONTO PRA<br><em>COMEÇAR?</em></h2>
-  <p class="contact-sub reveal">SALVADOR, BA<br>RESPONDO RÁPIDO · SEM ENROLAÇÃO</p>
-  <div class="contact-btns reveal">
-    <a href="https://wa.me/5571988071570" target="_blank" class="btn primary">WHATSAPP <span class="btn-arr">↗</span></a>
-    <a href="https://www.instagram.com/kalustcam" target="_blank" class="btn">INSTAGRAM <span class="btn-arr">↗</span></a>
-    <a href="https://www.behance.net/kalehb" target="_blank" class="btn">BEHANCE <span class="btn-arr">↗</span></a>
+<section class="proc-contact reveal">
+  <div class="contact-panel">
+    <p class="label" style="justify-content:center;">CONTATO</p>
+    <h3 class="contact-panel-title">Fale comigo.</h3>
+    <p class="contact-panel-sub">A dm 'tá aberta. Se quiser marcar projeto, ideia ou dúvida, manda mensagem direto.</p>
+    <div class="contact-btns">
+      <a href="https://wa.me/5571988071570" target="_blank" class="btn primary">WHATSAPP <span class="btn-arr">↗</span></a>
+      <a href="https://www.instagram.com/kalustcam" target="_blank" class="btn">INSTAGRAM <span class="btn-arr">↗</span></a>
+      <a href="https://www.behance.net/kalehb" target="_blank" class="btn">BEHANCE <span class="btn-arr">↗</span></a>
+    </div>
   </div>
 </section>
 
 <footer>
-  <img src="data:image/png;base64,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" alt="Kalust" style="height:30px;opacity:.5;filter:hue-rotate(60deg) saturate(0.3);" />
+  <img src="assets/klogo.webp" alt="Kalust" width="30" height="30" loading="lazy" />
   <span class="footer-note">CAPTAÇÃO · EDIÇÃO · AUDIOVISUAL · SALVADOR, BA</span>
 </footer>
 
@@ -597,7 +751,7 @@ footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;justify-co
   </div>
 </div>
 
-<script>
+<script defer>
 const modal = document.getElementById('case-modal');
 const title = document.getElementById('case-title');
 const desc = document.getElementById('case-desc');
@@ -663,7 +817,7 @@ document.addEventListener('keydown', (e)=>{
 });
 </script>
 
-<script>
+<script defer>
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
@@ -672,7 +826,7 @@ document.querySelectorAll('a,button').forEach(el=>{
   el.addEventListener('mouseenter',()=>{cursor.style.width='16px';cursor.style.height='16px';ring.style.width='46px';ring.style.height='46px';});
   el.addEventListener('mouseleave',()=>{cursor.style.width='8px';cursor.style.height='8px';ring.style.width='30px';ring.style.height='30px';});
 });
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.08});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.08,rootMargin:'50px'});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 </script>
 </body>
